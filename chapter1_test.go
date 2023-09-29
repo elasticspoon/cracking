@@ -58,3 +58,35 @@ func TestIsPermutationPalindrome(t *testing.T) {
 		}
 	}
 }
+
+func TestRotateMatrix(t *testing.T) {
+	cases := []struct {
+		in, want [][]int
+	}{
+		{[][]int{{1}}, [][]int{{1}}},
+		{[][]int{{1, 2}, {3, 4}}, [][]int{{3, 1}, {4, 2}}},
+		{[][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, [][]int{{7, 4, 1}, {8, 5, 2}, {9, 6, 3}}},
+		{[][]int{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 0, 1, 2}, {3, 4, 5, 6}}, [][]int{{3, 9, 5, 1}, {4, 0, 6, 2}, {5, 1, 7, 3}, {6, 2, 8, 4}}},
+	}
+
+	for _, c := range cases {
+		val := RotateMatrix(c.in)
+		if !compareMatrix(val, c.want) {
+			t.Errorf("RotateMatrix(%v) == %v, want %v", c.in, val, c.want)
+		}
+	}
+}
+
+func compareMatrix(a, b [][]int) bool {
+	if len(a) != len(b) || len(a[0]) != len(b[0]) {
+		return false
+	}
+	for i := range a {
+		for j := range a[i] {
+			if a[i][j] != b[i][j] {
+				return false
+			}
+		}
+	}
+	return true
+}

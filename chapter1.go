@@ -45,3 +45,25 @@ func IsPermutationPalindrome(s string) bool {
 
 	return numOdd <= 1
 }
+
+func RotateMatrix(array [][]int) [][]int {
+	n := len(array)
+	for i := 0; i < n/2; i++ {
+		for j := i; j < n-i-1; j++ {
+			rotato(&array, i, j)
+		}
+	}
+	return array
+}
+
+func rotato(array *[][]int, x int, y int) {
+	arr := *array
+	n := len(arr) - 1
+	nx, ny := n-x, n-y
+
+	temp := arr[y][nx]
+	arr[y][nx] = arr[x][y]
+	arr[nx][ny], temp = temp, arr[nx][ny]
+	arr[ny][x], temp = temp, arr[ny][x]
+	arr[x][y] = temp
+}
