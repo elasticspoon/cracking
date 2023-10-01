@@ -17,7 +17,7 @@ func TestLinkedList(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		list := LinkedList[int, int]{nil, 0}
+		list := LinkedList[int]{nil, 0}
 		for _, v := range tt.insertions {
 			list.Insert(v)
 		}

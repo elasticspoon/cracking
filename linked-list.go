@@ -3,64 +3,57 @@ package ctci
 import "fmt"
 
 func (ll *LinkedListError[T]) Error() string {
-	return fmt.Sprintf("key %v not found", ll.key)
+	return fmt.Sprintf("value %v not found", ll.value)
 }
 
-type LinkedListError[K comparable] struct {
-	key K
+type LinkedListError[T comparable] struct {
+	value T
 }
 
-type node[K comparable, V any] struct {
-	key   K
-	value V
-	next  *node[K, V]
+type node[T comparable] struct {
+	value T
+	next  *node[T]
 }
 
-func (n *node[K, V]) delete(key K) *node[K, V] {
-	if n.key == key {
+func (n *node[T]) delete(el T) *node[T] {
+	if n.value == el {
 		return n.next
 	} else if n.next == nil {
 		return n
 	} else {
-		n.next = n.next.delete(key)
+		n.next = n.next.delete(el)
 		return n
 	}
 }
 
-func (n *node[K, V]) search(key K) (*node[K, V], error) {
-	if n.key == key {
+func (n *node[T]) search(el T) (*node[T], error) {
+	if n.value == el {
 		return n, nil
 	} else if n.next == nil {
-		return nil, &LinkedListError[K]{key}
+		return nil, &LinkedListError[T]{el}
 	} else {
-		return n.next.search(key)
+		return n.next.search(el)
 	}
 }
 
-type LinkedList[K comparable, V any] struct {
-	head   *node[K, V]
+type LinkedList[T comparable] struct {
+	head   *node[T]
 	Length int
 }
 
-func (ll *LinkedList[K, V]) Delete(key K) {
+func (ll *LinkedList[T]) Delete(el T) {
 	if ll.head != nil {
-		ll.Length--
-		ll.head = ll.head.delete(key)
+		ll.head = ll.head.delete(el)
 	}
 }
 
-func (ll *LinkedList[K, V]) Insert(key K, values ...V) {
-	ll.Length++
-	if len(values) > 0 {
-		ll.head = &node[K, V]{key: key, next: ll.head, value: values[0]}
-	} else {
-		ll.head = &node[K, V]{key: key, next: ll.head}
-	}
+func (ll *LinkedList[T]) Insert(el T) {
+	ll.head = &node[T]{el, ll.head}
 }
 
-func (ll *LinkedList[K, V]) Search(el K) (*node[K, V], error) {
+func (ll *LinkedList[T]) Search(el T) (*node[T], error) {
 	if ll.head == nil {
-		return nil, &LinkedListError[K]{el}
+		return nil, &LinkedListError[T]{el}
 	} else {
 		return ll.head.search(el)
 	}

@@ -1,33 +1,57 @@
 package ctci
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
-func TestHashTable(t *testing.T) {
+type HashNode struct {
+	key   Hashable
+	value any
+}
+
+func TestHashTableIntKeys(t *testing.T) {
 	tests := []struct {
-		insertions [][2]int
-		deletions  []int
-		expected   [][2]int
-		unexpected [][2]int
+		insertions []HashNode
+		deletions  []Hashable
+		expected   []HashNode
+		unexpected []HashNode
 	}{
-		{([][2]int{{1, 1}}), ([]int{1}), ([][2]int{{1, 1}}), ([][2]int{})},
-		{([][2]int{{1, 1}}), ([]int{1}), ([][2]int{{1, 1}}), ([][2]int{})},
+		{[]HashNode{{HashableInt(1), 1}}, []Hashable{HashableInt(1)}, []HashNode{}, []HashNode{{HashableInt(1), 1}}},
+		{[]HashNode{{HashableString("test"), 1}}, []Hashable{HashableString("test")}, []HashNode{}, []HashNode{{HashableString("test"), 1}}},
 	}
 
 	for _, tt := range tests {
 
-		hashTable := NewHashTable[int, int]()
+		hashTable := NewHashTable[Hashable, any](1)
 		for _, v := range tt.insertions {
-			hashTable.Set(v[0], v[1])
+			hashTable.Set(v.key, v.value)
 		}
 
+		fmt.Println(hashTable.String())
+
 		for _, v := range tt.insertions {
-			if val, err := hashTable.Get(v[0]); err != nil {
-			} else if val != v[1] {
+			if val, err := hashTable.Get(v.key); err != nil {
+				t.Errorf("%v", err)
+			} else if val != v.value {
+				t.Errorf("Expected %v, got %v", v.value, val)
 			}
 		}
 
 		for _, v := range tt.deletions {
 			hashTable.Delete(v)
+		}
+		for _, v := range tt.expected {
+			if val, err := hashTable.Get(v.key); err != nil {
+				t.Errorf("%v", err)
+			} else if val != v.value {
+				t.Errorf("Expected %v, got %v", v.value, val)
+			}
+		}
+		for _, v := range tt.unexpected {
+			if v, err := hashTable.Get(v.key); err == nil {
+				t.Errorf("Did not expect to find %v", v)
+			}
 		}
 	}
 }
