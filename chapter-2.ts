@@ -102,6 +102,81 @@ function printList<T>(head: LLNode<T>): string {
   return out;
 }
 
+function partition<T>(head: LLNode<T>, partition: T): LLNode<T> {
+  let ltHead: LLNode<T> | null = null;
+  let ltTail: LLNode<T> | null = null;
+  let gtHead: LLNode<T> | null = null;
+  let current: LLNode<T> | null = head;
+
+  while (current) {
+    if (current.value < partition) {
+      ltTail = ltTail ?? current;
+      let temp = current;
+      current = current.next;
+      temp.next = ltHead;
+      ltHead = temp;
+    } else {
+      let temp = current;
+      current = current.next;
+      temp.next = gtHead;
+      gtHead = temp;
+    }
+  }
+  if (ltTail) {
+    ltTail!.next = gtHead;
+  }
+  return ltHead ?? gtHead!;
+}
+
+function findIntersection<T>(a: LLNode<T>, b: LLNode<T>): LLNode<T> | null {
+  const nodeSet = new Set<T>();
+  let current: LLNode<T> | null = a;
+  while (current) {
+    nodeSet.add(current.value);
+    current = current.next;
+  }
+
+  current = b;
+  while (current) {
+    if (nodeSet.has(current.value)) {
+      return current;
+    }
+    current = current.next;
+  }
+
+  return null;
+}
+
+function testFindIntersection(): void {
+  console.log("Testing findIntersection");
+  let a = buildList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  let b = buildList([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+  let res = findIntersection(a, b);
+  console.log(res == null);
+
+  a = buildList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  b = buildList([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+  b.next!.next!.next!.next!.next = a.next!.next;
+  res = findIntersection(a, b);
+  console.log(res!.value == 3);
+}
+
+function testPartition(): void {
+  console.log("Testing partition");
+  let list = buildList([3, 5, 8, 5, 10, 2, 1]);
+  let res = printList(partition(list, 5)!);
+  console.log(res == "1 -> 2 -> 3 -> 10 -> 5 -> 8 -> 5 -> null");
+  list = buildList([3]);
+  res = printList(partition(list, 2)!);
+  console.log(res == "3 -> null");
+  list = buildList([3]);
+  res = printList(partition(list, 5)!);
+  console.log(res == "3 -> null");
+  list = buildList([3, 8]);
+  res = printList(partition(list, 5)!);
+  console.log(res == "3 -> 8 -> null");
+}
+
 function testDeleteMiddleNode(): void {
   console.log("Testing deleteMiddleNode");
   let list = buildList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -154,3 +229,5 @@ function testKthValue(): void {
 testRemoveDups();
 testKthValue();
 testDeleteMiddleNode();
+testPartition();
+testFindIntersection();
