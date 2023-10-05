@@ -1,7 +1,6 @@
 package ctci
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -10,7 +9,39 @@ type HashNode struct {
 	value any
 }
 
-func TestHashTableIntKeys(t *testing.T) {
+func TestHashTableRehash(t *testing.T) {
+	tests := []struct {
+		insertions int
+		deletions  int
+		sizeMax    int
+		sizeMin    int
+	}{
+		{1, 0, 2, 2},
+		{10, 0, 16, 16},
+	}
+
+	for _, tt := range tests {
+
+		hashTable := NewHashTable[Hashable, any](1)
+		for i := 0; i < tt.insertions; i++ {
+			hashTable.Set(HashableInt(i), i)
+		}
+
+		if hashTable.Size != tt.sizeMax {
+			t.Errorf("Expected size %v, got %v", tt.sizeMax, hashTable.Size)
+		}
+
+		for i := 0; i < tt.deletions; i++ {
+			hashTable.Delete(HashableInt(i))
+		}
+
+		if hashTable.Size != tt.sizeMin {
+			t.Errorf("Expected size %v, got %v", tt.sizeMin, hashTable.Size)
+		}
+	}
+}
+
+func TestHashTableItems(t *testing.T) {
 	tests := []struct {
 		insertions []HashNode
 		deletions  []Hashable
@@ -27,8 +58,6 @@ func TestHashTableIntKeys(t *testing.T) {
 		for _, v := range tt.insertions {
 			hashTable.Set(v.key, v.value)
 		}
-
-		fmt.Println(hashTable.String())
 
 		for _, v := range tt.insertions {
 			if val, err := hashTable.Get(v.key); err != nil {

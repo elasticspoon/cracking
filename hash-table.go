@@ -103,18 +103,25 @@ type HashTable[K Hashable, V any] struct {
 }
 
 func (ht *HashTable[K, V]) Set(key K, value any) {
-	bucket := &ht.list[ht.hash(key)]
-
-	bucket.Insert(key, value)
+	ht.set(key, value)
 	ht.Items++
 	ht.rehash()
 }
 
-func (ht *HashTable[K, V]) Delete(key K) {
+func (ht *HashTable[K, V]) set(key K, value any) {
 	bucket := &ht.list[ht.hash(key)]
-	bucket.Delete(key)
+	bucket.Insert(key, value)
+}
+
+func (ht *HashTable[K, V]) Delete(key K) {
+	ht.delete(key)
 	ht.Items--
 	ht.rehash()
+}
+
+func (ht *HashTable[K, V]) delete(key K) {
+	bucket := &ht.list[ht.hash(key)]
+	bucket.Delete(key)
 }
 
 func NewHashTable[K Hashable, V any](size int) HashTable[K, V] {
@@ -139,8 +146,11 @@ func (ht *HashTable[K, V]) hash(key K) int {
 	hasher := sha256.New()
 	hasher.Write(key.Hash())
 	hashed := hasher.Sum(nil)
-	hashedInt := new(big.Int).SetBytes(hashed)
-	return int(hashedInt.Int64()) % ht.Size
+	hashedInt := (new(big.Int).SetBytes(hashed))
+	hashedInt.Mod(hashedInt, big.NewInt(int64(ht.Size)))
+
+	res := int(hashedInt.Int64())
+	return res
 }
 
 func (ht *HashTable[K, V]) String() string {
@@ -161,7 +171,7 @@ func (ht *HashTable[K, V]) rehash() {
 
 	if density := float64(ht.Items) / float64(ht.Size); density > 0.8 {
 		newSize = ht.Size * 2
-	} else if density < 0.2 {
+	} else if density < 0.2 && ht.Size > 1 {
 		newSize = ht.Size / 2
 	} else {
 		return
@@ -172,12 +182,11 @@ func (ht *HashTable[K, V]) rehash() {
 	for _, bucket := range ht.list {
 		walker := bucket.head
 		for walker != nil {
-			newHashTable.Set(walker.key, walker.value)
+			newHashTable.set(walker.key, walker.value)
 			walker = walker.next
 		}
 	}
 
 	ht.list = newHashTable.list
 	ht.Size = newSize
-	ht.Items = newHashTable.Items
 }
