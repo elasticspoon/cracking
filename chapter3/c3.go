@@ -1,5 +1,64 @@
 package chapter3
 
+// 3.2 Stack Min: How would you design a stack which, in addition to push and pop, has a function min
+
+type LLNode[T int] struct {
+	value T
+	next  *LLNode[T]
+}
+
+type LLNodeWrapper[T int, K any] struct {
+	value *LLNode[T]
+	next  *LLNodeWrapper[T, K]
+}
+
+type Stack[T int] struct {
+	stack *LLNode[T]
+	min   *LLNodeWrapper[T, *LLNode[T]]
+}
+
+func (s *Stack[T]) Min() T {
+	if s.min == nil {
+		panic("Stack is empty")
+	}
+	return s.min.value.value
+}
+
+func NewStack[T int]() *Stack[T] {
+	return &Stack[T]{
+		stack: nil,
+		min:   nil,
+	}
+}
+
+func (s *Stack[T]) Push(value T) {
+	newNode := &LLNode[T]{
+		value: value,
+		next:  s.stack,
+	}
+	s.stack = newNode
+
+	if s.min == nil || value < s.Min() {
+		s.min = &LLNodeWrapper[T, *LLNode[T]]{
+			value: newNode,
+			next:  s.min,
+		}
+	}
+}
+
+func (s *Stack[T]) Pop() T {
+	if s.stack == nil {
+		panic("Stack is empty")
+	}
+	res := s.stack
+	s.stack = s.stack.next
+	if res == s.min.value {
+		s.min = s.min.next
+	}
+	return res.value
+}
+
+// 3.1 Three in One: Describe how you could use a single array to implement three stacks.
 type TripleStack[T any] struct {
 	array            []T
 	lenA, lenB, lenC int

@@ -62,3 +62,44 @@ func TestTripleStack(t *testing.T) {
 		}
 	}
 }
+
+func TestMinStack(t *testing.T) {
+	tests := []struct {
+		action string
+		value  int
+	}{
+		{"push", 8},
+		{"min", 8},
+		{"push", 5},
+		{"min", 5},
+		{"push", 7},
+		{"min", 5},
+		{"push", 8},
+		{"push", 9},
+		{"pop", 9},
+		{"min", 5},
+		{"pop", 8},
+		{"pop", 7},
+		{"min", 5},
+		{"pop", 5},
+		{"min", 8},
+		{"pop", 8},
+	}
+
+	stack := NewStack[int]()
+	for _, test := range tests {
+		value := test.value
+		switch test.action {
+		case "push":
+			stack.Push(test.value)
+		case "pop":
+			value = stack.Pop()
+		case "min":
+			value = stack.Min()
+		}
+
+		if value != test.value {
+			t.Errorf("Expected %v, got %v", test.value, value)
+		}
+	}
+}
