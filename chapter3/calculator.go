@@ -1,9 +1,8 @@
 package chapter3
 
 import (
-	"strconv"
-
 	"ctci/builtins"
+	"strconv"
 )
 
 type Calculator struct {
@@ -13,8 +12,8 @@ type Calculator struct {
 
 func NewCalculator() *Calculator {
 	return &Calculator{
-		nums: builtins.New(),
-		ops:  builtins.New(),
+		nums: builtins.NewStack(),
+		ops:  builtins.NewStack(),
 	}
 }
 

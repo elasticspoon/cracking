@@ -15,54 +15,49 @@ import (
 // siftUp(Node) bool: sift up the node, return true if sifted, false otherwise
 // siftDown(Node) bool: sift down the node, return true if sifted, false otherwise
 type Heap struct {
-	array []int
+	array []BasicNode
 }
 
-func (n *Node) heapInsert(node *Node) {
-	if n.left == nil {
-		n.left = node
-	} else if n.right == nil {
-		n.right = node
-	} else {
-		panic("heap is full")
-	}
+type BasicNode interface {
+	Key() int
+	Value() int
 }
 
 func NewHeap() *Heap {
-	return &Heap{array: []int{}}
+	return &Heap{array: []BasicNode{}}
 }
 
 func (h *Heap) IsEmpty() bool {
 	return len(h.array) == 0
 }
 
-func (h *Heap) Heapify(input []int) {
+func (h *Heap) Heapify(input []BasicNode) {
 	for _, v := range input {
 		h.Push(v)
 	}
 }
 
-func (h *Heap) Peek() int {
-	return h.array[0]
+func (h *Heap) Peek() any {
+	return h.array[0].Value()
 }
 
-func (h *Heap) Push(v int) {
+func (h *Heap) Push(v BasicNode) {
 	h.array = append(h.array, v)
 	h.siftUp(len(h.array) - 1)
 }
 
-func (h *Heap) Pop() int {
+func (h *Heap) Pop() any {
 	val := h.array[0]
 	h.array[0], h.array[len(h.array)-1] = h.array[len(h.array)-1], h.array[0]
 	h.array = h.array[:len(h.array)-1]
 
 	h.siftDown(0)
-	return val
+	return (val).Value()
 }
 
 func (h *Heap) siftUp(i int) {
 	for child, parent := i, (i-1)/2; parent >= 0; {
-		if h.array[child] < h.array[parent] {
+		if h.array[child].Value() < h.array[parent].Value() {
 			h.array[child], h.array[parent] = h.array[parent], h.array[child]
 			child = parent
 			parent = (parent - 1) / 2
@@ -82,15 +77,15 @@ func (h *Heap) siftDown(parent int) {
 		childB := 2*parent + 2
 
 		var valA, valB int
-		valP := h.array[parent]
+		valP := h.array[parent].Value()
 
 		if childA >= len(h.array) {
 			return
 		} else if childB >= len(h.array) {
-			valA = h.array[childA]
+			valA = h.array[childA].Value()
 			valB = math.MaxInt
 		} else {
-			valA, valB = h.array[childA], h.array[childB]
+			valA, valB = h.array[childA].Value(), h.array[childB].Value()
 		}
 
 		if valP < valA && valP < valB {

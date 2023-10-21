@@ -1,13 +1,13 @@
 package builtins
 
-type Node struct {
-	left   *Node
-	right  *Node
-	parent *Node
+type TreeNode struct {
+	left   *TreeNode
+	right  *TreeNode
+	parent *TreeNode
 	value  int
 }
 
-func (n *Node) nodeMin() *Node {
+func (n *TreeNode) nodeMin() *TreeNode {
 	for n.left != nil {
 		n = n.left
 	}
@@ -15,23 +15,23 @@ func (n *Node) nodeMin() *Node {
 	return n
 }
 
-func (n *Node) insert(value int) {
+func (n *TreeNode) insert(value int) {
 	if value < n.value {
 		if n.left == nil {
-			n.left = &Node{value: value, parent: n}
+			n.left = &TreeNode{value: value, parent: n}
 		} else {
 			n.left.insert(value)
 		}
 	} else if value > n.value {
 		if n.right == nil {
-			n.right = &Node{value: value, parent: n}
+			n.right = &TreeNode{value: value, parent: n}
 		} else {
 			n.right.insert(value)
 		}
 	}
 }
 
-func (n *Node) contains(value int) bool {
+func (n *TreeNode) contains(value int) bool {
 	if n.value == value {
 		return true
 	} else if value < n.value {
@@ -49,7 +49,7 @@ func (n *Node) contains(value int) bool {
 	}
 }
 
-func (n *Node) inOrder(res []int) []int {
+func (n *TreeNode) inOrder(res []int) []int {
 	if n.left != nil {
 		res = n.left.inOrder(res)
 	}
@@ -60,7 +60,7 @@ func (n *Node) inOrder(res []int) []int {
 	return res
 }
 
-func (n *Node) preOrder(res []int) []int {
+func (n *TreeNode) preOrder(res []int) []int {
 	res = append(res, n.value)
 	if n.left != nil {
 		res = n.left.preOrder(res)
@@ -71,7 +71,7 @@ func (n *Node) preOrder(res []int) []int {
 	return res
 }
 
-func (n *Node) postOrder(res []int) []int {
+func (n *TreeNode) postOrder(res []int) []int {
 	if n.left != nil {
 		res = n.left.postOrder(res)
 	}
@@ -83,10 +83,10 @@ func (n *Node) postOrder(res []int) []int {
 }
 
 type BinarySearchTree struct {
-	root *Node
+	root *TreeNode
 }
 
-func (t *BinarySearchTree) transplant(dest, target *Node) {
+func (t *BinarySearchTree) transplant(dest, target *TreeNode) {
 	switch dest {
 	case t.root:
 		t.root = target
@@ -103,7 +103,7 @@ func (t *BinarySearchTree) transplant(dest, target *Node) {
 	}
 }
 
-func (t *BinarySearchTree) deleteNode(target *Node) {
+func (t *BinarySearchTree) deleteNode(target *TreeNode) {
 	// case 1: no left child
 	if target.left == nil {
 		t.transplant(target, target.right)
@@ -136,7 +136,7 @@ func (t *BinarySearchTree) Delete(value int) {
 
 func (t *BinarySearchTree) Insert(value int) {
 	if t.root == nil {
-		t.root = &Node{value: value}
+		t.root = &TreeNode{value: value}
 		return
 	}
 	t.root.insert(value)
@@ -149,7 +149,7 @@ func (t *BinarySearchTree) Contains(value int) bool {
 	return t.root.contains(value)
 }
 
-func (t *BinarySearchTree) findNode(value int) *Node {
+func (t *BinarySearchTree) findNode(value int) *TreeNode {
 	if t.root == nil {
 		return nil
 	}
@@ -204,7 +204,7 @@ func (t *BinarySearchTree) PostOrder() []int {
 		switch v := curr.(type) {
 		case int:
 			res = append(res, v)
-		case *Node:
+		case *TreeNode:
 			stack.Push(v.value)
 			if v.right != nil {
 				stack.Push(v.right)
@@ -229,7 +229,7 @@ func (t *BinarySearchTree) PreOrder() []int {
 		switch v := curr.(type) {
 		case int:
 			res = append(res, v)
-		case *Node:
+		case *TreeNode:
 			if v.right != nil {
 				stack.Push(v.right)
 			}
@@ -254,7 +254,7 @@ func (t *BinarySearchTree) Inorder() []int {
 		switch v := curr.(type) {
 		case int:
 			res = append(res, v)
-		case *Node:
+		case *TreeNode:
 			if v.right != nil {
 				stack.Push(v.right)
 			}
