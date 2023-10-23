@@ -1,4 +1,4 @@
-class LLNode<T> {
+export class LLNode<T> {
   value: T;
   next: LLNode<T> | null;
 
@@ -45,7 +45,7 @@ function removeDupsBuffer<T>(head: LLNode<T>): LLNode<T> {
   return head;
 }
 
-function kthValue<T>(head: LLNode<T>, k: number): T {
+export function kthValue<T>(head: LLNode<T>, k: number): T {
   let len = 0;
   let current = head;
   while (current) {
@@ -102,7 +102,7 @@ function printList<T>(head: LLNode<T>): string {
   return out;
 }
 
-function partition<T>(head: LLNode<T>, partition: T): LLNode<T> {
+export function partition<T>(head: LLNode<T>, partition: T): LLNode<T> {
   let ltHead: LLNode<T> | null = null;
   let ltTail: LLNode<T> | null = null;
   let gtHead: LLNode<T> | null = null;
@@ -128,7 +128,7 @@ function partition<T>(head: LLNode<T>, partition: T): LLNode<T> {
   return ltHead ?? gtHead!;
 }
 
-function findIntersection<T>(a: LLNode<T>, b: LLNode<T>): LLNode<T> | null {
+export function findIntersection<T>(a: LLNode<T>, b: LLNode<T>): LLNode<T> | null {
   const nodeSet = new Set<T>();
   let current: LLNode<T> | null = a;
   while (current) {
@@ -147,19 +147,6 @@ function findIntersection<T>(a: LLNode<T>, b: LLNode<T>): LLNode<T> | null {
   return null;
 }
 
-function testFindIntersection(): void {
-  console.log("Testing findIntersection");
-  let a = buildList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-  let b = buildList([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-  let res = findIntersection(a, b);
-  console.log(res == null);
-
-  a = buildList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-  b = buildList([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-  b.next!.next!.next!.next!.next = a.next!.next;
-  res = findIntersection(a, b);
-  console.log(res!.value == 3);
-}
 
 function testPartition(): void {
   console.log("Testing partition");
@@ -215,19 +202,8 @@ function testRemoveDups(): void {
   console.log(printList(res) == "1 -> null");
 }
 
-function testKthValue(): void {
-  console.log("Testing kthValue");
-  let list = buildList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-  let res = kthValue(list, 0);
-  console.log(res == 10);
-  res = kthValue(list, 4);
-  console.log(res == 6);
-  res = kthValue(list, 9);
-  console.log(res == 1);
-}
 
-testRemoveDups();
-testKthValue();
-testDeleteMiddleNode();
-testPartition();
-testFindIntersection();
+// testRemoveDups();
+// testKthValue();
+// testDeleteMiddleNode();
+// testPartition();
