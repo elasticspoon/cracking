@@ -57,9 +57,6 @@ export function InsertIntoTree(array: number[]): TreeNode | null {
   }
 
   return tree
-
-
-
 }
 
 export type Graph = { [key: number]: number[] };
@@ -90,7 +87,37 @@ export function hasPath(graph: Graph, start: number, end: number): boolean {
       }
     }
   }
-
-
   return false
+}
+
+export class Node {
+  public value: any;
+  public next: Node | null;
+  constructor(value: any) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+export function treeToLists(tree: TreeNode): Node[] {
+  let nodes: Node[] = [];
+  let queue: [TreeNode, number][] = [[tree, 1]];
+
+  while (queue.length > 0) {
+    let [tNode, level]: [TreeNode, number] = queue.shift()!;
+    let node = new Node(tNode.value);
+
+    if (nodes[level - 1]) {
+      node.next = nodes[level - 1];
+    }
+    nodes[level - 1] = node;
+
+    if (tNode.left) {
+      queue.push([tNode.left, level + 1]);
+    }
+    if (tNode.right) {
+      queue.push([tNode.right, level + 1]);
+    }
+  }
+  return nodes
 }
