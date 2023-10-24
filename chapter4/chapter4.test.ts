@@ -1,4 +1,4 @@
-import { TreeNode, InsertIntoTree, Graph, Node, hasPath, treeToLists } from "./chapter4";
+import { TreeNode, InsertIntoTree, Graph, Node, hasPath, treeToLists, isBalanced, isBalancedB } from "./chapter4";
 
 test("InsertIntoTree: height 4", () => {
   let array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -60,6 +60,51 @@ test("treeToLists: balanced", () => {
   for (let list of treeToLists(tree)) {
     expect(nodeListToArray(list)).toEqual(expected.shift());
   }
+});
+test("treeToLists: unbalanced", () => {
+  let tree = buildTree([1, 2, 3, 4, 5])!;
+  let expected = [[1], [2], [3], [4], [5]];
+
+  for (let list of treeToLists(tree)) {
+    expect(nodeListToArray(list)).toEqual(expected.shift());
+  }
+});
+
+test("treeToLists: balanced", () => {
+  let tree = buildTree([5, 2, 7, 1, 3, 6, 8])!;
+  let expected = [[5], [7, 2], [8, 6, 3, 1]];
+
+  for (let list of treeToLists(tree)) {
+    expect(nodeListToArray(list)).toEqual(expected.shift());
+  }
+});
+
+test("isBalanced: balanced", () => {
+  let tree = buildTree([5, 2, 7, 1, 3, 6, 8])!;
+  expect(isBalanced(tree)).toBe(true);
+});
+
+test("isBalanced: balanced barely", () => {
+  let tree = buildTree([1, 2])!;
+  expect(isBalanced(tree)).toBe(true);
+});
+test("isBalanced: unbalanced", () => {
+  let tree = buildTree([1, 2, 3, 4, 5])!;
+  expect(isBalanced(tree)).toBe(false);
+});
+
+test("isBalancedBookV: balanced", () => {
+  let tree = buildTree([5, 2, 7, 1, 3, 6, 8])!;
+  expect(isBalancedB(tree)).toBe(true);
+});
+
+test("isBalancedBookV: balanced barely", () => {
+  let tree = buildTree([1, 2])!;
+  expect(isBalancedB(tree)).toBe(true);
+});
+test("isBalancedBookV: unbalanced", () => {
+  let tree = buildTree([1, 2, 3, 4, 5])!;
+  expect(isBalancedB(tree)).toBe(false);
 });
 
 function buildTree(array: number[]): TreeNode | null {

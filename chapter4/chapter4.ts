@@ -121,3 +121,49 @@ export function treeToLists(tree: TreeNode): Node[] {
   }
   return nodes
 }
+
+export function isBalanced(tree: TreeNode | null): boolean {
+  if (tree === null) { return false }
+  let depthSizes: number[] = [];
+  let queue: [TreeNode, number][] = [[tree, 0]];
+
+  while (queue.length > 0) {
+    let [tNode, level]: [TreeNode, number] = queue.shift()!;
+    if (depthSizes[level - 1] && depthSizes[level - 1] < 2 ** (level - 1)) {
+      return false
+    }
+    console.log("checked me", tNode.value)
+
+    depthSizes[level] = (depthSizes[level] ?? 0) + 1;
+    if (tNode.left) {
+      queue.push([tNode.left, level + 1]);
+    }
+    if (tNode.right) {
+      queue.push([tNode.right, level + 1]);
+    }
+  }
+
+  return true
+}
+
+function checkHeight(tree: TreeNode | null): number {
+  if (tree === null) { return -1 }
+  console.log("checked", tree.value)
+
+  let leftHeight = checkHeight(tree.left);
+  if (leftHeight === -Infinity) { return -Infinity }
+
+  let rightHeight = checkHeight(tree.right);
+  if (rightHeight === -Infinity) { return -Infinity }
+
+  let heightDiff = Math.abs(leftHeight - rightHeight);
+  if (heightDiff > 1) {
+    return -Infinity
+  } else {
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+}
+
+export function isBalancedB(tree: TreeNode | null): boolean {
+  return checkHeight(tree) !== -Infinity
+}
