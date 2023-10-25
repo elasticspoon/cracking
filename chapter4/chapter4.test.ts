@@ -1,4 +1,4 @@
-import { TreeNode, InsertIntoTree, Graph, Node, hasPath, treeToLists, isBalanced, isBalancedB } from "./chapter4";
+import { TreeNode, InsertIntoTree, inorderSuccessor, isBST, Graph, Node, hasPath, treeToLists, isBalanced, isBalancedB } from "./chapter4";
 
 test("InsertIntoTree: height 4", () => {
   let array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -107,6 +107,101 @@ test("isBalancedBookV: unbalanced", () => {
   expect(isBalancedB(tree)).toBe(false);
 });
 
+test("isBST: valid balanced", () => {
+  let tree = new TreeNode(5);
+
+  tree.left = new TreeNode(2);
+  tree.right = new TreeNode(7);
+
+  tree.left.left = new TreeNode(1);
+  tree.left.right = new TreeNode(4);
+
+  tree.right.left = new TreeNode(6);
+  tree.right.right = new TreeNode(8);
+
+
+  expect(isBST(tree)).toBe(true);
+});
+
+test("isBST: valid unbalanced", () => {
+  let tree = new TreeNode(5);
+  tree.left = new TreeNode(4);
+  tree.left.left = new TreeNode(3);
+  tree.left.left.left = new TreeNode(2);
+  tree.left.left.left.left = new TreeNode(1);
+
+  expect(isBST(tree)).toBe(true);
+});
+
+test("isBST: invalid", () => {
+  let tree = new TreeNode(5);
+  tree.left = new TreeNode(2);
+  tree.right = new TreeNode(7);
+
+  tree.left.left = new TreeNode(1);
+  tree.left.right = new TreeNode(6);
+
+  tree.right.left = new TreeNode(6);
+  tree.right.right = new TreeNode(8);
+
+
+  expect(isBST(tree)).toBe(false);
+});
+
+test("isBST: invalid tree", () => {
+  let tree = null;
+  expect(isBST(tree)).toBe(false);
+});
+
+describe("inorderSuccessor", () => {
+  let tree = bstTree();
+
+  test("inorderSuccessor: 25-> null", () => {
+    let node = tree.right!;
+
+    expect(inorderSuccessor(node)).toBe(null);
+  });
+
+  test("inorderSuccessor: 20-> 25", () => {
+    expect(inorderSuccessor(tree)!.value).toBe(25);
+  });
+
+  test("inorderSuccessor: 14-> 20", () => {
+    let node = tree.left!.right!.right!
+
+    expect(inorderSuccessor(node)!.value).toBe(20);
+  });
+});
+
+
+
+
+function bstTree(): TreeNode {
+  let tree = new TreeNode(20);
+
+  tree.left = new TreeNode(5);
+  tree.left.parent = tree;
+  tree.right = new TreeNode(25);
+  tree.right.parent = tree;
+
+  tree.left.left = new TreeNode(3);
+  tree.left.left.parent = tree.left;
+  tree.left.right = new TreeNode(12);
+  tree.left.right.parent = tree.left;
+
+
+  tree.left.right.left = new TreeNode(1);
+  tree.left.right.left.parent = tree.left.right;
+  tree.left.right.right = new TreeNode(4);
+  tree.left.right.right.parent = tree.left.right;
+
+  tree.left.right.left = new TreeNode(6);
+  tree.left.right.left.parent = tree.left.right;
+  tree.left.right.right = new TreeNode(14);
+  tree.left.right.right.parent = tree.left.right;
+  return tree
+}
+
 function buildTree(array: number[]): TreeNode | null {
   let tree: TreeNode | null = null;
   for (let value of array) {
@@ -127,3 +222,4 @@ function nodeListToArray(node: Node | null): any[] {
   }
   return array;
 }
+

@@ -3,11 +3,13 @@ export class TreeNode {
   public height: number;
   public left: TreeNode | null
   public right: TreeNode | null
+  public parent: TreeNode | null
   constructor(value: number) {
     this.value = value;
     this.left = null;
     this.right = null;
     this.height = 1;
+    this.parent = null;
   }
 
   public insert(value: number): void {
@@ -132,7 +134,6 @@ export function isBalanced(tree: TreeNode | null): boolean {
     if (depthSizes[level - 1] && depthSizes[level - 1] < 2 ** (level - 1)) {
       return false
     }
-    console.log("checked me", tNode.value)
 
     depthSizes[level] = (depthSizes[level] ?? 0) + 1;
     if (tNode.left) {
@@ -148,7 +149,6 @@ export function isBalanced(tree: TreeNode | null): boolean {
 
 function checkHeight(tree: TreeNode | null): number {
   if (tree === null) { return -1 }
-  console.log("checked", tree.value)
 
   let leftHeight = checkHeight(tree.left);
   if (leftHeight === -Infinity) { return -Infinity }
@@ -166,4 +166,61 @@ function checkHeight(tree: TreeNode | null): number {
 
 export function isBalancedB(tree: TreeNode | null): boolean {
   return checkHeight(tree) !== -Infinity
+}
+
+export function isBST(tree: TreeNode | null): boolean {
+  if (tree === null) { return false }
+
+  let stack: (TreeNode | number)[] = [tree];
+  let result: number[] = [];
+
+  while (stack.length > 0) {
+    let value = stack.pop()!;
+    if (typeof value === "number") {
+      result.push(value);
+    } else {
+      if (value.right) {
+        stack.push(value.right);
+      }
+      stack.push(value.value);
+      if (value.left) {
+        stack.push(value.left);
+      }
+    }
+
+    for (let i = 1; i < result.length; i++) {
+      if (result[i] < result[i - 1]) {
+        return false
+      }
+    }
+  }
+  return true
+}
+
+export function inorderSuccessor(node: TreeNode): TreeNode | null {
+  if (node.right) { return subtreeMin(node.right) }
+  if (node.parent && isLeftChild(node, node.parent)) { return node.parent }
+
+  while (node.parent) {
+    console.log(node.value, node.parent.value, isLeftChild(node, node.parent))
+    if (isLeftChild(node, node.parent)) {
+      return node.parent
+    }
+    node = node.parent;
+  }
+
+
+  return null
+}
+
+
+function subtreeMin(tree: TreeNode): TreeNode {
+  while (tree.left) {
+    tree = tree.left;
+  }
+  return tree
+}
+
+function isLeftChild(node: TreeNode, parent: TreeNode): boolean {
+  return node === parent.left
 }

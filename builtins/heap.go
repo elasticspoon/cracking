@@ -1,6 +1,7 @@
 package builtins
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -31,6 +32,10 @@ func (h *Heap) IsEmpty() bool {
 	return len(h.array) == 0
 }
 
+func (h *Heap) Len() int {
+	return len(h.array)
+}
+
 func (h *Heap) Heapify(input []BasicNode) {
 	for _, v := range input {
 		h.Push(v)
@@ -44,6 +49,10 @@ func (h *Heap) Peek() any {
 func (h *Heap) Push(v BasicNode) {
 	h.array = append(h.array, v)
 	h.siftUp(len(h.array) - 1)
+}
+
+func (h *Heap) String() string {
+	return fmt.Sprintf("%v", h.array)
 }
 
 func (h *Heap) Pop() any {
@@ -95,9 +104,12 @@ func (h *Heap) siftDown(parent int) {
 		if valA < valB {
 			h.array[childA], h.array[parent] = h.array[parent], h.array[childA]
 			parent = childA
+			// fmt.Println("broke here? 1")
 		} else {
+			fmt.Println(h.array)
 			h.array[childB], h.array[parent] = h.array[parent], h.array[childB]
 			parent = childB
+			// fmt.Println("broke here? 2")
 		}
 	}
 }
