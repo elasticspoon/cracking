@@ -202,7 +202,6 @@ export function inorderSuccessor(node: TreeNode): TreeNode | null {
   if (node.parent && isLeftChild(node, node.parent)) { return node.parent }
 
   while (node.parent) {
-    console.log(node.value, node.parent.value, isLeftChild(node, node.parent))
     if (isLeftChild(node, node.parent)) {
       return node.parent
     }
@@ -223,4 +222,45 @@ function subtreeMin(tree: TreeNode): TreeNode {
 
 function isLeftChild(node: TreeNode, parent: TreeNode): boolean {
   return node === parent.left
+}
+
+export function commonA(treeA: TreeNode, treeB: TreeNode): TreeNode | null {
+  let [pathA, pathB]: [string, string] = ["", ""]
+  let [currA, currB]: [TreeNode, TreeNode] = [treeA, treeB]
+
+  while (currA.parent) {
+    if (isLeftChild(currA, currA.parent)) {
+      pathA += "L"
+    } else {
+      pathA += "R"
+    }
+    currA = currA.parent;
+  }
+
+  while (currB.parent) {
+    if (isLeftChild(currB, currB.parent)) {
+      pathB += "L"
+    } else {
+      pathB += "R"
+    }
+    currB = currB.parent;
+  }
+
+  if (currA !== currB) { return null }
+
+  let i = 1;
+  while (pathA.at(-i) && pathB.at(-i) && pathA.at(-i) === pathB.at(-i)) {
+    i++
+  }
+
+  let common = pathA.slice(pathA.length - (i - 1))
+
+  for (let j = 0; j < common.length; j++) {
+    if (common[j] === "L") {
+      currA = currA.left!;
+    } else {
+      currA = currA.right!;
+    }
+  }
+  return currA
 }

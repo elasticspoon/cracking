@@ -1,4 +1,4 @@
-import { TreeNode, InsertIntoTree, inorderSuccessor, isBST, Graph, Node, hasPath, treeToLists, isBalanced, isBalancedB } from "./chapter4";
+import { TreeNode, InsertIntoTree, inorderSuccessor, isBST, Graph, Node, hasPath, treeToLists, commonA, isBalanced, isBalancedB } from "./chapter4";
 
 test("InsertIntoTree: height 4", () => {
   let array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -173,6 +173,30 @@ describe("inorderSuccessor", () => {
   });
 });
 
+describe("commonA", () => {
+  let tree = bstTree();
+
+  test("commonA: 3, 14 -> 5", () => {
+    let node1 = tree.left!.left!;
+    let node2 = tree.left!.right!.right!;
+
+    expect(commonA(node1, node2)!.value).toBe(5);
+  });
+
+  test("commonA: 1, 25 -> 20", () => {
+    let node1 = tree.left!.left!.left!;
+    let node2 = tree.right!;
+
+    expect(commonA(node1, node2)!.value).toBe(20)
+  });
+
+  test("commonA: 14, 20 -> 20", () => {
+    let node1 = tree.left!.right!.right!;
+    let node2 = tree;
+
+    expect(commonA(node1, node2)!.value).toBe(20)
+  });
+});
 
 
 
@@ -190,10 +214,10 @@ function bstTree(): TreeNode {
   tree.left.right.parent = tree.left;
 
 
-  tree.left.right.left = new TreeNode(1);
-  tree.left.right.left.parent = tree.left.right;
-  tree.left.right.right = new TreeNode(4);
-  tree.left.right.right.parent = tree.left.right;
+  tree.left.left.left = new TreeNode(1);
+  tree.left.left.left.parent = tree.left.left;
+  tree.left.left.right = new TreeNode(4);
+  tree.left.left.right.parent = tree.left.left;
 
   tree.left.right.left = new TreeNode(6);
   tree.left.right.left.parent = tree.left.right;
