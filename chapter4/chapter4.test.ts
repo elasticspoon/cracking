@@ -1,4 +1,4 @@
-import { TreeNode, InsertIntoTree, inorderSuccessor, isBST, Graph, Node, hasPath, treeToLists, commonA, isBalanced, isBalancedB } from "./chapter4";
+import { TreeNode, InsertIntoTree, inorderSuccessor, isBST, possibleBSTInsertOrder, Graph, Node, hasPath, treeToLists, commonA, commonA2, commonA3, isBalanced, isBalancedB } from "./chapter4";
 
 test("InsertIntoTree: height 4", () => {
   let array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -173,8 +173,75 @@ describe("inorderSuccessor", () => {
   });
 });
 
+describe("commonA3", () => {
+  let tree = bstTree();
+
+  test("commonA: 3, node not tree-> null", () => {
+    let node1 = tree.left!.left!;
+    let node2 = new TreeNode(11);
+
+    expect(commonA3(tree, node1, node2)).toBeNull();
+  });
+  test("commonA: 3, 14 -> 5", () => {
+    let node1 = tree.left!.left!;
+    let node2 = tree.left!.right!.right!;
+
+    expect(commonA3(tree, node1, node2)!.value).toBe(5);
+  });
+
+  test("commonA: 1, 25 -> 20", () => {
+    let node1 = tree.left!.left!.left!;
+    let node2 = tree.right!;
+
+    expect(commonA3(tree, node1, node2)!.value).toBe(20)
+  });
+
+  test("commonA: 14, 20 -> 20", () => {
+    let node1 = tree.left!.right!.right!;
+    let node2 = tree;
+
+    expect(commonA3(tree, node1, node2)!.value).toBe(20)
+  });
+});
+describe("commonA2", () => {
+  let tree = bstTree();
+
+  test("commonA: 3, node not tree-> null", () => {
+    let node1 = tree.left!.left!;
+    let node2 = new TreeNode(11);
+
+    expect(commonA2(node1, node2)).toBeNull();
+  });
+  test("commonA: 3, 14 -> 5", () => {
+    let node1 = tree.left!.left!;
+    let node2 = tree.left!.right!.right!;
+
+    expect(commonA2(node1, node2)!.value).toBe(5);
+  });
+
+  test("commonA: 1, 25 -> 20", () => {
+    let node1 = tree.left!.left!.left!;
+    let node2 = tree.right!;
+
+    expect(commonA2(node1, node2)!.value).toBe(20)
+  });
+
+  test("commonA: 14, 20 -> 20", () => {
+    let node1 = tree.left!.right!.right!;
+    let node2 = tree;
+
+    expect(commonA2(node1, node2)!.value).toBe(20)
+  });
+});
 describe("commonA", () => {
   let tree = bstTree();
+
+  test("commonA: 3, node not tree-> null", () => {
+    let node1 = tree.left!.left!;
+    let node2 = new TreeNode(11);
+
+    expect(commonA(node1, node2)).toBeNull();
+  });
 
   test("commonA: 3, 14 -> 5", () => {
     let node1 = tree.left!.left!;
@@ -195,6 +262,34 @@ describe("commonA", () => {
     let node2 = tree;
 
     expect(commonA(node1, node2)!.value).toBe(20)
+  });
+});
+
+describe("possible BST insert order", () => {
+  test("5 node tree: 3, 2, 5, 1,8", () => {
+    let tree = new TreeNode(3);
+
+    tree.left = new TreeNode(2);
+    tree.right = new TreeNode(5);
+
+    tree.left.left = new TreeNode(1);
+    tree.right.right = new TreeNode(8);
+
+    let expected = [[3, 2, 5, 1, 8], [3, 2, 5, 8, 1], [3, 5, 2, 1, 8], [3, 5, 2, 8, 1]]
+    let result = possibleBSTInsertOrder(tree);
+
+    expect(result).toEqual(expected);
+  });
+  test("3 node tree: 3, 2, 5", () => {
+    let tree = new TreeNode(3);
+
+    tree.left = new TreeNode(2);
+    tree.right = new TreeNode(5);
+
+    let expected = [[3, 2, 5], [3, 5, 2]]
+
+    expect(possibleBSTInsertOrder(tree)).toEqual(expected);
+
   });
 });
 

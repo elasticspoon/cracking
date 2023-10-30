@@ -224,6 +224,93 @@ function isLeftChild(node: TreeNode, parent: TreeNode): boolean {
   return node === parent.left
 }
 
+export function commonA3(root: TreeNode, nodeA: TreeNode, nodeB: TreeNode): TreeNode | null {
+  // check that both nodes are in the tree
+  if (!contains(root, nodeA) || !contains(root, nodeB)) { return null }
+  return recCommonA(root, nodeA, nodeB)
+}
+
+// if subtreeBeingChecked includes a and not b return a
+// if subtreeBeingChecked includes b and not a return b
+// if subtreeBeingChecked has neither a nor b return null
+// else return commonA of a and b
+function recCommonA(subtreeBeingChecked: TreeNode | null, nodeA: TreeNode, nodeB: TreeNode): TreeNode | null {
+  // subtree had neither a or b. propogate it up
+  if (subtreeBeingChecked === null) { return null }
+  // subtree was the commonA. propagate it up
+  if (subtreeBeingChecked === nodeA || subtreeBeingChecked === nodeB) { return subtreeBeingChecked }
+
+  // checking left subtree for a and b
+  let left = recCommonA(subtreeBeingChecked.left, nodeA, nodeB);
+  // if it returned a value and that value is not null, a or b then that value is commonA. propogate it up
+  if (left && left !== nodeA && left !== nodeB) { return left }
+
+
+  // checking right subtree for a and b
+  let right = recCommonA(subtreeBeingChecked.right, nodeA, nodeB);
+  // if it returned a value and that value is not null, a or b then that value is commonA. propogate it up
+  if (right && right !== nodeA && right !== nodeB) { return right }
+
+  // Base case
+
+  // both left and right returned values that are not null, a or b
+  // this means current root is common anc
+  if (left && right) {
+    return subtreeBeingChecked
+  } else if (subtreeBeingChecked === nodeA || subtreeBeingChecked === nodeB) {
+    // if a or b is the root then it is the commonA, return it
+    return subtreeBeingChecked
+  } else if (left || right) {
+    // either left or right was null
+    // return the non null value
+    return left ? left : right
+  } else {
+    return null
+  }
+
+}
+
+function contains(tree: TreeNode | null, node: TreeNode): boolean {
+  if (tree === null) { return false }
+  if (tree === node) { return true }
+  return contains(tree.left, node) || contains(tree.right, node)
+}
+
+
+export function commonA2(treeA: TreeNode, treeB: TreeNode): TreeNode | null {
+  let [currA, currB]: [TreeNode | null, TreeNode | null] = [treeA, treeB]
+  let [depthA, depthB]: [number, number] = [0, 0];
+
+  while (currA) {
+    currA = currA.parent;
+    depthA++
+  }
+  while (currB) {
+    currB = currB.parent;
+    depthB++
+  }
+
+  let diff = Math.abs(depthA - depthB);
+
+  if (depthA > depthB) {
+    [currA, currB] = [treeA, treeB]
+  } else {
+    [currA, currB] = [treeB, treeA]
+  }
+
+  for (let i = 0; i < diff; i++) {
+    currA = currA!.parent;
+  }
+
+  while (currA !== currB) {
+    currA = currA!.parent;
+    currB = currB!.parent;
+    depthA--
+  }
+
+
+  return currB
+}
 export function commonA(treeA: TreeNode, treeB: TreeNode): TreeNode | null {
   let [pathA, pathB]: [string, string] = ["", ""]
   let [currA, currB]: [TreeNode, TreeNode] = [treeA, treeB]
@@ -264,3 +351,45 @@ export function commonA(treeA: TreeNode, treeB: TreeNode): TreeNode | null {
   }
   return currA
 }
+
+
+export function possibleBSTInsertOrder(tree: TreeNode): number[][] {
+  let queue: [number, TreeNode][] = [[0, tree]];
+  let levels: number[][] = [];
+  let result: number[][] = [];
+
+  while (queue.length > 0) {
+    let [level, tNode]: [number, TreeNode] = queue.shift()!;
+    levels[level] = (levels[level] ?? []).concat(tNode.value);
+    if (tNode.left) {
+      queue.push([level + 1, tNode.left]);
+    }
+    if (tNode.right) {
+      queue.push([level + 1, tNode.right]);
+    }
+  }
+
+  let totalPoss = levels.reduce((acc, curr) => acc * factorial(curr.length), 1);
+
+  for (let i = 0; i < totalPoss; i++) {
+    let divisor = totalPoss;
+    let temp: number[] = [];
+    for (let arr of levels) {
+      divisor = divisor / factorial(arr.length);
+      let index = Math.floor(i / divisor) % arr.length;
+      for (let j = 0; j < arr.length; j++) {
+        temp.push(arr[(j + index) % arr.length]);
+      }
+    }
+    result.push(temp);
+  }
+
+
+  return result
+}
+
+function factorial(n: number): number {
+  if (n === 0) { return 1 }
+  return n * factorial(n - 1)
+}
+
