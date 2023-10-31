@@ -1,4 +1,4 @@
-import { TreeNode, InsertIntoTree, inorderSuccessor, isBST, possibleBSTInsertOrder, Graph, Node, hasPath, treeToLists, commonA, commonA2, commonA3, isBalanced, isBalancedB } from "./chapter4";
+import { TreeNode, InsertIntoTree, isSubtreeByVal, isSubtreeByRef, inorderSuccessor, isBST, possibleBSTInsertOrder, Graph, Node, hasPath, treeToLists, commonA, commonA2, commonA3, isBalanced, isBalancedB } from "./chapter4";
 
 test("InsertIntoTree: height 4", () => {
   let array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -292,6 +292,59 @@ describe("possible BST insert order", () => {
 
   });
 });
+
+describe("isSubtreeByValue", () => {
+  let tree = bstTree()
+  let otherTree = bstTree();
+
+  test("returns true when given the same tree", () => {
+    let result = isSubtreeByVal(tree, otherTree)
+    expect(result).toBe(true)
+  })
+
+  test("returns true when given a subtree", () => {
+    let subtree = otherTree.left!.right!
+    let result = isSubtreeByVal(tree, subtree)
+    expect(result).toBe(true)
+  });
+
+  test("returns false when given a node not in tree", () => {
+    let otherTree = new TreeNode(99);
+
+    let result = isSubtreeByRef(tree, otherTree);
+    expect(result).toBe(false)
+  });
+});
+describe("isSubtreeByRef", () => {
+  let tree = bstTree()
+  let otherTree = bstTree();
+
+  test("returns true when given the same tree", () => {
+    let result = isSubtreeByRef(tree, tree)
+    expect(result).toBe(true)
+  })
+
+  test("returns true when given a subtree", () => {
+    let subtree = tree.left!.right!
+    let result = isSubtreeByRef(tree, subtree)
+    expect(result).toBe(true)
+  });
+
+  test("returns false when given different node by ref", () => {
+    let subtree = otherTree.left!.right!
+    let result = isSubtreeByRef(tree, subtree)
+
+    expect(result).toBe(false)
+  });
+  test("returns false when given a node not in tree", () => {
+    let subtree = new TreeNode(11)
+    subtree.left = new TreeNode(12)
+
+    let result = isSubtreeByRef(tree, subtree)
+    expect(result).toBe(false)
+  });
+});
+
 
 
 

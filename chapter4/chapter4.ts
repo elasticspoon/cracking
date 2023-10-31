@@ -393,3 +393,39 @@ function factorial(n: number): number {
   return n * factorial(n - 1)
 }
 
+export function isSubtreeByRef(parent: TreeNode, child: TreeNode): boolean {
+  if (parent === child) { return true }
+
+  let queue: TreeNode[] = [parent];
+  while (queue.length > 0) {
+    let node = queue.shift()!;
+    if (node === child) { return true }
+    if (node.left) { queue.push(node.left) }
+    if (node.right) { queue.push(node.right) }
+  }
+
+  return false
+
+}
+
+export function isSubtreeByVal(parent: TreeNode, child: TreeNode): boolean {
+  if (parent.value === child.value) { return true }
+
+  let queue: TreeNode[] = [parent];
+  while (queue.length > 0) {
+    let node = queue.shift()!;
+    if (subtreesEqualByValue(node, child)) { return true }
+    if (node.left) { queue.push(node.left) }
+    if (node.right) { queue.push(node.right) }
+  }
+  return false
+}
+
+
+function subtreesEqualByValue(treeA: TreeNode | null, treeB: TreeNode | null): boolean {
+  if (treeA?.value !== treeB?.value) { return false }
+  if (treeA === null && treeB === null) { return true }
+
+
+  return subtreesEqualByValue(treeA!.left, treeB!.left) && subtreesEqualByValue(treeA!.right, treeB!.right)
+}
