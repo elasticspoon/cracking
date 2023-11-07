@@ -1,4 +1,4 @@
-package chapter3
+package chapter4
 
 type NodeTop struct {
 	dep   []int
