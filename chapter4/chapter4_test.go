@@ -33,3 +33,42 @@ func TestRandomNode(t *testing.T) {
 		}
 	}
 }
+
+func TestPathsWithSum(t *testing.T) {
+	tree := &BinTree{value: 20}
+
+	tree.left = &BinTree{value: 11}
+	tree.right = &BinTree{value: 3}
+
+	tree.left.left = &BinTree{value: 14}
+	tree.left.right = &BinTree{value: 15}
+	tree.right.right = &BinTree{value: 8}
+
+	tree.left.left.left = &BinTree{value: -3}
+	tree.left.right.left = &BinTree{value: 9}
+	tree.right.right.left = &BinTree{value: 7}
+	tree.right.right.right = &BinTree{value: 2}
+
+	tree.right.right.left.right = &BinTree{value: -4}
+	tree.left.right.left.right = &BinTree{value: 2}
+
+	tests := []struct {
+		target        int
+		expectedCount int
+	}{
+		{target: 20, expectedCount: 1},
+		{target: 31, expectedCount: 2},
+		{target: 0, expectedCount: 0},
+		{target: 11, expectedCount: 5},
+		{target: -3, expectedCount: 1},
+		{target: 15, expectedCount: 2},
+		{target: -83, expectedCount: 0},
+	}
+
+	for _, test := range tests {
+		count := tree.NumPathsWithSum(test.target)
+		if count != test.expectedCount {
+			t.Errorf("Expected %v paths with sum %v, but got %v", test.expectedCount, test.target, count)
+		}
+	}
+}

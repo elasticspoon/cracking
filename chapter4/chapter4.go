@@ -53,3 +53,32 @@ func (b *BinTree) RandomNode() *BinTree {
 	}
 	panic("Shouldn't get here")
 }
+
+func (t *BinTree) NumPathsWithSum(tar int) int {
+	count := t.recNumPathsWithSum(tar, 0)
+	if t.left != nil {
+		count += t.left.NumPathsWithSum(tar)
+	}
+
+	if t.right != nil {
+		count += t.right.NumPathsWithSum(tar)
+	}
+
+	return count
+}
+
+func (t *BinTree) recNumPathsWithSum(tar int, sum int) int {
+	count := 0
+
+	if t.value+sum == tar {
+		count++
+	}
+
+	if t.left != nil {
+		count += t.left.recNumPathsWithSum(tar, t.value+sum)
+	}
+	if t.right != nil {
+		count += t.right.recNumPathsWithSum(tar, t.value+sum)
+	}
+	return count
+}
