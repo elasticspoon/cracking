@@ -2,6 +2,59 @@ package chapter5
 
 import "testing"
 
+func TestInsertBit(t *testing.T) {
+	tests := []struct {
+		n    uint32
+		m    uint32
+		i    int
+		j    int
+		want uint32
+	}{
+		{0b10000000000, 0b10011, 2, 6, 0b10001001100},
+	}
+
+	for _, tt := range tests {
+		if got := InsertBitsBetween(tt.n, tt.m, tt.i, tt.j); got != tt.want {
+			t.Errorf("InsertBit(%v, %v, %v, %v) = %v, want %v", tt.n, tt.m, tt.i, tt.j, got, tt.want)
+		}
+	}
+}
+
+func TestFloatDecToBinary(t *testing.T) {
+	tests := []struct {
+		n    float64
+		want string
+	}{
+		{0.5, "0.1"},
+		{0.75, "0.11"},
+		{0.625, "0.101"},
+		{0.1, "ERROR"},
+	}
+
+	for _, tt := range tests {
+		if got := FloatDecToBinary(tt.n); got != tt.want {
+			t.Errorf("FloatDecToBinary(%v) = %v, want %v", tt.n, got, tt.want)
+		}
+	}
+}
+
+func TestFlipBit(t *testing.T) {
+	tests := []struct {
+		given int
+		want  int
+	}{
+		{0b11011101111, 8},
+		{0b1111, 4},
+		{0b1110, 4},
+	}
+
+	for _, tt := range tests {
+		if got := FlipBit(tt.given); got != tt.want {
+			t.Errorf("FlipBit(%v) = %v, want %v", tt.given, got, tt.want)
+		}
+	}
+}
+
 func TestBookNextLarger(t *testing.T) {
 	tests := []struct {
 		given    int

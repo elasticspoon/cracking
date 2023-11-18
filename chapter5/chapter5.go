@@ -1,5 +1,68 @@
 package chapter5
 
+import "fmt"
+
+func InsertBitsBetween(n, m uint32, i, j int) uint32 {
+	var mask uint32
+	mask = (1 << (j + 1)) - 1
+	mask &= ^((1 << i) - 1)
+	n &= ^mask
+	return n | (m << i)
+}
+
+func FloatDecToBinary(n float64) string {
+	if n >= 1 || n < 0 {
+		return "ERROR"
+	}
+	var result uint32
+
+	for i := 1; n > 0 && i < 33; i++ {
+		tmp := 1 << i
+		if v := 1 / float64(tmp); n >= v {
+			result = result<<1 + 1
+			n -= v
+		} else {
+			result <<= 1
+		}
+	}
+
+	if n != 0 {
+		return "ERROR"
+	} else {
+		return fmt.Sprintf("0.%b", result)
+	}
+}
+
+func FlipBit(n int) int {
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+
+	var curr, prev, maxLen int
+	prev = -1
+
+	for n > 0 {
+		if n%2 == 1 {
+			curr++
+			maxLen = max(maxLen, curr)
+		} else {
+			prev = curr
+			curr = 0
+		}
+
+		if n >= 0 {
+			maxLen = max(maxLen, curr+prev+1)
+		}
+
+		n /= 2
+	}
+
+	return maxLen
+}
+
 func nextLarger(n int) int {
 	length := 0
 	numBits := 0
