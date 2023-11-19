@@ -147,3 +147,33 @@ func SwapOddEvenBits(n int) int {
 
 	return (evens << 1) | (odds >> 1)
 }
+
+func DrawLine(screen []byte, width int, x1 int, x2 int, y int) ([]byte, bool) {
+	rowSize := width / 8
+	if len(screen) == 0 || len(screen)%rowSize != 0 {
+		return nil, false
+	}
+	height := len(screen) / rowSize
+	if y < 0 || y > height || x1 > x2 || x1 > width || x2 < 1 || x1 < 1 {
+		return nil, false
+	}
+
+	sB, sI := (x1-1)/8, (x1-1)%8
+	eB, eI := (x2-1)/8, (x2-1)%8
+	offset := (y - 1) * rowSize
+
+	for i := offset + sB + 1; i < offset+eB; i++ {
+		screen[i] = 255
+	}
+
+	if sB == eB {
+		mask := byte(255 >> sI)
+		mask &= 255 << (7 - eI)
+		screen[offset+sB] |= mask
+	} else {
+		screen[offset+sB] |= ^(1 << (8 - sI))
+		screen[offset+eB] |= 255 << (7 - eI)
+	}
+
+	return screen, true
+}

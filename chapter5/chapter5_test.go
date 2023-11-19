@@ -1,6 +1,9 @@
 package chapter5
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestInsertBit(t *testing.T) {
 	tests := []struct {
@@ -162,4 +165,55 @@ func TestSwapOddEvenBits(t *testing.T) {
 			t.Errorf("swapOddEvenBits(%b): expected %b, actual %b", tt.given, tt.expected, actual)
 		}
 	}
+}
+
+func TestScreenWriter(t *testing.T) {
+	t.Run("test screen", func(t *testing.T) {
+		tests := []struct {
+			given            []byte
+			width, x1, x2, y int
+			expectedScreen   []byte
+		}{
+			{[]byte{0, 0, 0}, 8, 1, 1, 2, []byte{0, 128, 0}},
+			{[]byte{0, 0, 0}, 8, 2, 4, 2, []byte{0, 0b01110000, 0}},
+			{[]byte{0, 0, 0}, 8, 1, 8, 2, []byte{0, 255, 0}},
+			{[]byte{0, 0, 0}, 24, 1, 24, 1, []byte{255, 255, 255}},
+			{[]byte{0, 0, 0}, 24, 2, 23, 1, []byte{0b01111111, 255, 0b11111110}},
+		}
+
+		for _, tt := range tests {
+			actualScreen, actualErr := DrawLine(tt.given, tt.width, tt.x1, tt.x2, tt.y)
+			if actualErr == false {
+				t.Errorf("screenWriter(%v, %d, %d, %d, %d): expected no error", tt.given, tt.width, tt.x1, tt.x2, tt.y)
+			}
+
+			if reflect.DeepEqual(actualScreen, tt.expectedScreen) == false {
+				t.Errorf("screenWriter(%v, %d, %d, %d, %d): expected %v, actual %v", tt.given, tt.width, tt.x1, tt.x2, tt.y, tt.expectedScreen, actualScreen)
+			}
+		}
+	})
+	t.Run("test errors", func(t *testing.T) {
+		tests := []struct {
+			given            []byte
+			width, x1, x2, y int
+			expectedScreen   []byte
+			expectedErr      bool
+		}{
+			{[]byte{}, 8, 0, 0, 0, []byte{}, false},          // empty screen
+			{[]byte{2, 3, 4}, 32, 0, 0, 0, []byte{}, false},  // row not long enough
+			{[]byte{2, 3, 4}, 8, 0, 0, 4, []byte{}, false},   // y is out of bounds
+			{[]byte{2, 3, 4}, 8, 1, 0, 2, []byte{}, false},   // x1 > x2
+			{[]byte{2, 3, 4}, 8, 1, 0, 2, []byte{}, false},   // x1 > x2
+			{[]byte{2, 3, 4}, 8, 11, 12, 2, []byte{}, false}, // x is out of bounds right
+			{[]byte{2, 3, 4}, 8, 0, 0, 2, []byte{}, false},   //  x is out of bounds left
+			{[]byte{2, 3, 4}, 8, -1, 1, 2, []byte{}, false},  //  x is out of bounds left
+		}
+
+		for _, tt := range tests {
+			_, actualErr := DrawLine(tt.given, tt.width, tt.x1, tt.x2, tt.y)
+			if actualErr != tt.expectedErr {
+				t.Errorf("screenWriter(%v, %d, %d, %d, %d): expected %v, actual %v", tt.given, tt.width, tt.x1, tt.x2, tt.y, tt.expectedErr, actualErr)
+			}
+		}
+	})
 }
