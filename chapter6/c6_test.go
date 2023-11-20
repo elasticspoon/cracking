@@ -17,3 +17,22 @@ func TestCalcLockers(t *testing.T) {
 		}
 	}
 }
+
+func TestCalcBGRatio(t *testing.T) {
+	tests := []struct {
+		families int
+	}{
+		{100},
+		{1000},
+		{10000},
+		{100000},
+		{1000000},
+		{10000000},
+		{100000000},
+	}
+
+	for _, tt := range tests {
+		got := calcBGRatio(tt.families)
+		t.Logf("calcBGRatio(%v) = %v", tt.families, got)
+	}
+}
