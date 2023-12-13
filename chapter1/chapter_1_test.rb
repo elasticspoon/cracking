@@ -22,24 +22,24 @@ class TestChapter1 < Minitest::Test
   # test set_0_matrix method
   def test_set_0_matrix_2_2_no_0s
     expected = [[1, 1], [1, 1]]
-    input = [[1, 1], [1, 1]]
-    actual = set_0_matrix(input)
+    arrayy = [[1, 1], [1, 1]]
+    actual = set_0_matrix(array)
 
     assert_equal expected, actual
   end
 
   def test_set_0_matrix_2_2_1_0
     expected = [[0, 0], [0, 1]]
-    input = [[0, 1], [1, 1]]
-    actual = set_0_matrix(input)
+    arrayy = [[0, 1], [1, 1]]
+    actual = set_0_matrix(array)
 
     assert_equal expected, actual
   end
 
   def test_set_0_matrix_2_2_2_0
     expected = [[0, 0], [0, 0]]
-    input = [[0, 1], [0, 1]]
-    actual = set_0_matrix(input)
+    arrayy = [[0, 1], [0, 1]]
+    actual = set_0_matrix(array)
 
     assert_equal expected, actual
   end
@@ -51,13 +51,13 @@ class TestChapter1 < Minitest::Test
         [0, 0, 0, 0, 0],
         [0, 3, 3, 0, 3],
         [0, 3, 3, 0, 3]]
-    input =
+    arrayy =
       [[0, 3, 3, 3, 3],
         [3, 3, 3, 3, 3],
         [3, 3, 3, 0, 3],
         [3, 3, 3, 3, 3],
         [3, 3, 3, 3, 3]]
-    actual = set_0_matrix(input)
+    actual = set_0_matrix(array)
 
     assert_equal expected, actual
   end
@@ -69,13 +69,13 @@ class TestChapter1 < Minitest::Test
         [0, 3, 3, 3, 3],
         [0, 3, 3, 3, 3],
         [0, 3, 3, 3, 3]]
-    input =
+    arrayy =
       [[0, 3, 3, 3, 3],
         [3, 3, 3, 3, 3],
         [3, 3, 3, 3, 3],
         [3, 3, 3, 3, 3],
         [3, 3, 3, 3, 3]]
-    actual = set_0_matrix(input)
+    actual = set_0_matrix(array)
 
     assert_equal expected, actual
   end
