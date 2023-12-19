@@ -74,6 +74,7 @@ func TestMultiplyWithoutSign(t *testing.T) {
 		{1, 1, 1},
 		{20, 30, 600},
 		{20, 5, 100},
+		{139923023, 9672943, 139923023 * 9672943},
 	}
 
 	for _, test := range tests {

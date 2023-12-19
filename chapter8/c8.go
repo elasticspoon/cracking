@@ -75,22 +75,24 @@ func max(a, b int) int {
 	return b
 }
 
-func multiplyWithoutSign(a, b int) int {
-	if b > a {
-		return multiplyWithoutSign(b, a)
+func multiplyWithoutSign(big, small int) int {
+	if small > big {
+		return multiplyWithoutSign(small, big)
 	}
 
-	switch b {
+	switch small {
 	case 0:
 		return 0
 	case 1:
-		return a
+		return big
 	case 2:
-		return a << 1
+		return big << 1
 	case 3:
-		return (a << 1) + a
-	default:
-		left := b >> 1
-		return multiplyWithoutSign(a<<1, left) + multiplyWithoutSign(a, b-(left<<1))
+		return (big << 1) + big
 	}
+
+	if small&1 == 1 {
+		return big + multiplyWithoutSign(big<<1, small>>1)
+	}
+	return multiplyWithoutSign(big<<1, small>>1)
 }

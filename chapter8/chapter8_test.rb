@@ -56,3 +56,73 @@ class TestChapter8 < Minitest::Test
     assert_equal expected, got
   end
 end
+
+class TestTowerOfHanoi < Minitest::Test
+  def test_tower_size_1
+    tower = TowerOfHanoi.new(1)
+    expected = [[], [], [1]]
+
+    move_tower(tower)
+
+    got = tower.towers
+    assert_equal expected, got
+  end
+
+  def test_tower_size_2
+    tower = TowerOfHanoi.new(2)
+    expected = [[], [], [2, 1]]
+
+    move_tower(tower)
+
+    got = tower.towers
+    assert_equal expected, got
+  end
+
+  def test_tower_size_10
+    tower = TowerOfHanoi.new(10)
+    expected = [[], [], [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]]
+
+    move_tower(tower)
+
+    got = tower.towers
+    assert_equal expected, got
+  end
+end
+
+class TestPermutations < Minitest::Test
+  def test_permutations_1_length
+    string = "a"
+    expected = ["a"]
+
+    got = perms(string)
+
+    assert_equal expected, got
+  end
+
+  def test_permutations_2_length
+    string = "ab"
+    expected = ["ab", "ba"].sort
+
+    got = perms(string).sort
+
+    assert_equal expected, got
+  end
+
+  def test_permutations_3_length
+    string = "abc"
+    expected = ["abc", "acb", "bac", "bca", "cab", "cba"].sort
+
+    got = perms(string).sort
+
+    assert_equal expected, got
+  end
+
+  def test_permutations_with_duplicates
+    string = "abba"
+    expected = ["abba", "abab", "aabb", "baba", "baab", "bbaa"].sort
+
+    got = perms(string).sort
+
+    assert_equal expected, got
+  end
+end
