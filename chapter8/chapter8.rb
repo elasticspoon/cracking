@@ -134,3 +134,15 @@ def perms_helper(prefix, map)
 
   res
 end
+
+def parens(n)
+  parens_helper("", n, n)
+end
+
+def parens_helper(prefix, open, closed)
+  return [prefix] if open == 0 && closed == 0
+  return parens_helper(prefix + ")", open, closed - 1) if open == 0
+  return parens_helper(prefix + "(", open - 1, closed) if open == closed
+
+  parens_helper(prefix + "(", open - 1, closed) + parens_helper(prefix + ")", open, closed - 1)
+end

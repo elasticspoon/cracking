@@ -96,3 +96,18 @@ func multiplyWithoutSign(big, small int) int {
 	}
 	return multiplyWithoutSign(big<<1, small>>1)
 }
+
+var directions = [][2]int{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}
+
+func paintFill(screen [][]int, point [2]int, color int) {
+	x, y := point[0], point[1]
+	currColor := screen[y][x]
+	screen[y][x] = color
+
+	for _, dir := range directions {
+		newX, newY := x+dir[0], y+dir[1]
+		if newX >= 0 && newX < len(screen[0]) && newY >= 0 && newY < len(screen) && screen[newY][newX] == currColor {
+			paintFill(screen, [2]int{newX, newY}, color)
+		}
+	}
+}

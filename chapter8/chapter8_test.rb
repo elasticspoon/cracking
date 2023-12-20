@@ -126,3 +126,23 @@ class TestPermutations < Minitest::Test
     assert_equal expected, got
   end
 end
+
+class TestParenCombinations < Minitest::Test
+  def test_length_1
+    expected = ["()"]
+    got = parens(1)
+    assert_equal expected, got
+  end
+
+  def test_length_2
+    expected = ["()()", "(())"].sort
+    got = parens(2).sort
+    assert_equal expected, got
+  end
+
+  def test_length_3
+    expected = ["()()()", "()(())", "(())()", "(()())", "((()))"].sort
+    got = parens(3).sort
+    assert_equal expected, got
+  end
+end

@@ -1,6 +1,9 @@
 package chapter8
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestNumJumps(t *testing.T) {
 	tests := []struct {
@@ -81,6 +84,25 @@ func TestMultiplyWithoutSign(t *testing.T) {
 		got := multiplyWithoutSign(test.a, test.b)
 		if got != test.want {
 			t.Errorf("MultiplyWithoutSign(%d, %d) = %d, want %d", test.a, test.b, got, test.want)
+		}
+	}
+}
+
+func TestPaintFill(t *testing.T) {
+	tests := []struct {
+		screen [][]int
+		point  [2]int
+		color  int
+		want   [][]int
+	}{
+		{[][]int{{1, 1, 2}, {2, 1, 2}, {4, 3, 1}}, [2]int{0, 0}, 3, [][]int{{3, 3, 2}, {2, 3, 2}, {4, 3, 1}}},
+		{[][]int{{1, 1, 2}, {2, 1, 2}, {4, 3, 1}}, [2]int{2, 2}, 3, [][]int{{1, 1, 2}, {2, 1, 2}, {4, 3, 3}}},
+	}
+
+	for _, test := range tests {
+		paintFill(test.screen, test.point, test.color)
+		if !reflect.DeepEqual(test.screen, test.want) {
+			t.Errorf("PaintFill(%v, %d) = %v, want %v", test.point, test.color, test.screen, test.want)
 		}
 	}
 }
