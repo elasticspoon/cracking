@@ -146,3 +146,141 @@ class TestParenCombinations < Minitest::Test
     assert_equal expected, got
   end
 end
+
+class TestTallestStack < Minitest::Test
+  def test_bases_stackable
+    heights = [1, 2, 3, 3]
+    depths = [1, 2, 3, 3]
+    widths = [1, 2, 3, 3]
+
+    expected = [1, 2, nil, nil]
+
+    got = get_bases(heights, depths, widths)
+
+    assert_equal got, expected
+  end
+
+  def test_bases_unstackable
+    heights = [2, 2, 2]
+    depths = [2, 2, 2]
+    widths = [2, 2, 2]
+
+    expected = [nil, nil, nil]
+
+    got = get_bases(heights, depths, widths)
+
+    assert_equal got, expected
+  end
+
+  def test_height_stack
+    heights = [1, 2, 3, 3]
+    bases = [1, 2, nil, nil]
+    memo = Array.new(heights.length) { nil }
+
+    expected = 6
+    got = get_h(0, heights, bases, memo)
+
+    assert_equal got, expected
+  end
+
+  def test_height_stack_bottom
+    heights = [1, 2, 3, 3]
+    bases = [1, 2, nil, nil]
+    memo = Array.new(heights.length) { nil }
+
+    expected = 3
+    got = get_h(3, heights, bases, memo)
+
+    assert_equal got, expected
+  end
+
+  def test_max_height_1
+    heights = [2, 2, 2]
+    depths = [2, 2, 2]
+    widths = [2, 2, 2]
+
+    expected = 2
+
+    got = tallest_stack(heights, depths, widths)
+
+    assert_equal got, expected
+  end
+
+  def test_max_height_2
+    heights = [1, 2, 3]
+    depths = [1, 2, 3]
+    widths = [1, 2, 3]
+
+    expected = 6
+
+    got = tallest_stack(heights, depths, widths)
+
+    assert_equal got, expected
+  end
+
+  def test_max_height_3
+    heights = [1, 2, 3, 7]
+    depths = [1, 2, 3, 7]
+    widths = [1, 2, 3, 1]
+
+    expected = 7
+
+    got = tallest_stack(heights, depths, widths)
+
+    assert_equal got, expected
+  end
+
+  def test_max_height_4
+    heights = [4, 2, 3, 7]
+    depths = [4, 2, 3, 7]
+    widths = [4, 2, 3, 1]
+
+    expected = 9
+
+    got = tallest_stack(heights, depths, widths)
+
+    assert_equal got, expected
+  end
+end
+
+class TestTallestStackTwo < Minitest::Test
+  def test_max_height_1
+    boxes = [[2, 2, 2], [2, 2, 2], [2, 2, 2]]
+
+    expected = 2
+
+    got = max_stack(boxes)
+
+    assert_equal expected, got
+  end
+
+  def test_max_height_2
+    boxes = [[1, 1, 1], [2, 2, 2], [3, 3, 3]]
+
+    expected = 6
+
+    got = max_stack(boxes)
+
+    assert_equal expected, got
+  end
+
+  def test_max_height_3
+    boxes = [[1, 1, 1], [2, 2, 2], [3, 3, 3], [7, 1, 1]]
+
+    expected = 7
+
+    got = max_stack(boxes)
+
+    assert_equal expected, got
+  end
+
+  def test_max_height_4
+    boxes = [[4, 4, 4], [2, 2, 2], [3, 3, 3], [7, 1, 1]]
+
+    expected = 9
+
+    got = max_stack(boxes)
+
+    assert_equal expected, got
+  end
+end

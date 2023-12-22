@@ -176,3 +176,50 @@ func opSwitch(left string, right string, op string, boolean bool, waysTrue map[s
 	}
 	panic("not implemented")
 }
+
+func coinCombs(v int) int {
+	if v < 5 {
+		return 1
+	}
+	var q, d, n int
+	q, v = v/25, v%25
+	d, v = v/10, v%10
+	n = v / 5
+
+	return rec_coinCombs(q, d, n)
+}
+
+func rec_coinCombs(q, d, n int) int {
+	if q > 0 && n > 0 {
+		return rec_coinCombs(q-1, d+3, n-1) + rec_coinCombs(0, d, n)
+	} else if q > 0 {
+		return rec_coinCombs(q-1, d+2, n+1) + rec_coinCombs(0, d, n)
+	} else if d > 0 {
+		return rec_coinCombs(0, d-1, n+2) + rec_coinCombs(0, 0, n)
+	} else if n > 0 {
+		return n + 1
+	} else {
+		return 1
+	}
+}
+
+var coins = []int{25, 10, 5, 1}
+
+func coinCombs2(n int) int {
+	return coinsRec(n, 0)
+}
+
+func coinsRec(n, index int) int {
+	if index >= len(coins)-1 {
+		return 1
+	}
+
+	sum := 0
+
+	for i := 0; n >= i*coins[index]; i++ {
+		v := i * coins[index]
+		sum += coinsRec(n-v, index+1)
+	}
+
+	return sum
+}

@@ -129,3 +129,35 @@ func TestParenWays(t *testing.T) {
 		}
 	}
 }
+
+func TestCoinCombs(t *testing.T) {
+	tests := []struct {
+		n    int
+		want int
+	}{
+		{1, 1},
+		{2, 1},
+		{5, 2},
+		{10, 4},
+		{25, 13},
+		{50, 49},
+		{100, 242},
+	}
+
+	t.Run("function 1", func(t *testing.T) {
+		for _, test := range tests {
+			got := coinCombs(test.n)
+			if got != test.want {
+				t.Errorf("CoinCombs(%d) = %d, want %d", test.n, got, test.want)
+			}
+		}
+	})
+	t.Run("function 2", func(t *testing.T) {
+		for _, test := range tests {
+			got := coinCombs2(test.n)
+			if got != test.want {
+				t.Errorf("CoinCombs(%d) = %d, want %d", test.n, got, test.want)
+			}
+		}
+	})
+}

@@ -146,3 +146,112 @@ def parens_helper(prefix, open, closed)
 
   parens_helper(prefix + "(", open - 1, closed) + parens_helper(prefix + ")", open, closed - 1)
 end
+
+def tallest_stack(heights, widths, depths)
+  bases = get_bases(heights, widths, depths)
+
+  memo = []
+  max_height = 0
+  (0...heights.length).each do |i|
+    height = get_h(i, heights, bases, memo)
+    max_height = height if height > max_height
+  end
+
+  max_height
+end
+
+def get_bases(heights, widths, depths)
+  bases = Array.new(heights.length) { nil }
+  (0...heights.length).each do |i|
+    (0...heights.length).each do |j|
+      next unless widths[i] < widths[j] && depths[i] < depths[j] && heights[i] < heights[j]
+      bases[i] = j if bases[i].nil? || heights[bases[i]] > heights[j]
+    end
+  end
+
+  bases
+end
+
+def get_h(index, heights, bases, memo)
+  return memo[index] if memo[index]
+  return heights[index] unless bases[index]
+
+  res = heights[index] + get_h(bases[index], heights, bases, memo)
+  memo[index] = res
+  res
+end
+
+BOARD_SIZE = 8
+def get_index(x, y)
+  x * BOARD_SIZE + y
+end
+
+def get_pos(index)
+  [index / BOARD_SIZE, index % BOARD_SIZE]
+end
+
+def valid?(pot_index, queen_pots)
+  x, y = get_pos(pot_index)
+  queen_pots.none? do |index|
+    new_x, new_y = get_pos(index)
+    x == new_x || y == new_y || (x - new_x).abs == (y - new_y).abs
+  end
+end
+
+def queen_locations
+  res = []
+  (0...BOARD_SIZE * BOARD_SIZE).each do |i|
+    queen_pots = {}
+    queen_pots[i] = true
+    res.concat(q_helper(7, queen_pots))
+  end
+end
+
+def q_helper(num_queens, queen_pots)
+  return queen_pots.keys if num_queens == 0
+  res = []
+
+  (0...BOARD_SIZE * BOARD_SIZE).each do |i|
+    next unless valid?(i, queen_pots.keys)
+
+    new_queen_pots = queen_pots.dup
+    new_queen_pots[i] = true
+
+    res.concat(q_helper(num_queens - 1, new_queen_pots))
+  end
+
+  res
+end
+
+def max_stack(boxes)
+  boxes = boxes.sort.reverse
+
+  max_height = 0
+  memo = []
+  (0...boxes.length).each do |i|
+    height = rec_max_stack(boxes, i, memo)
+    max_height = height if height > max_height
+  end
+
+  max_height
+end
+
+def rec_max_stack(boxes, index, memo)
+  return memo[index] if memo[index]
+
+  max_height = boxes[index][0]
+
+  (index...boxes.length).each do |i|
+    next unless stackable?(boxes[index], boxes[i])
+
+    pot_height = boxes[index][0] + rec_max_stack(boxes, i, memo)
+    max_height = pot_height if pot_height > max_height
+  end
+
+  memo[index] = max_height
+  max_height
+end
+
+def stackable?(bottom, top)
+  top[0] < bottom[0] && top[1] < bottom[1] && top[2] < bottom[2]
+end
