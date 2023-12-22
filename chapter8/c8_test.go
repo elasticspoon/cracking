@@ -106,3 +106,26 @@ func TestPaintFill(t *testing.T) {
 		}
 	}
 }
+
+func TestParenWays(t *testing.T) {
+	tests := []struct {
+		s       string
+		boolean bool
+		want    int
+	}{
+		{"1", false, 0},
+		{"1", true, 1},
+		{"0", false, 1},
+		{"0", true, 0},
+		{"1^0|1", true, 1},
+		{"1^0|0|1", false, 2},
+		{"0&0&0&1^1|0", true, 10},
+	}
+
+	for _, test := range tests {
+		got := parenWays(test.s, test.boolean)
+		if got != test.want {
+			t.Errorf("ParenWays(%s) = %d, want %d", test.s, got, test.want)
+		}
+	}
+}

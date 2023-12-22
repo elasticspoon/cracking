@@ -1,5 +1,7 @@
 package chapter8
 
+import "fmt"
+
 func numJumps(n int) int {
 	switch n {
 	case 1:
@@ -110,4 +112,67 @@ func paintFill(screen [][]int, point [2]int, color int) {
 			paintFill(screen, [2]int{newX, newY}, color)
 		}
 	}
+}
+
+func parenWays(s string, boolean bool) int {
+	trueMap := make(map[string]int)
+	falseMap := make(map[string]int)
+	trueMap["1"] = 1
+	falseMap["0"] = 1
+
+	res := recParenWays(s, boolean, trueMap, falseMap)
+	fmt.Println(trueMap, falseMap)
+	return res
+}
+
+func recParenWays(s string, boolean bool, waysTrue map[string]int, waysFalse map[string]int) int {
+	if boolean {
+		if _, ok := waysTrue[s]; ok {
+			return waysTrue[s]
+		}
+	} else {
+		if _, ok := waysFalse[s]; ok {
+			return waysFalse[s]
+		}
+	}
+
+	ways := 0
+	for i := 1; i < len(s); i += 2 {
+		left := s[:i]
+		right := s[i+1:]
+		op := string(s[i])
+		v := opSwitch(left, right, op, boolean, waysTrue, waysFalse)
+		if boolean {
+			waysTrue[s] = v
+		} else {
+			waysFalse[s] = v
+		}
+		ways += v
+	}
+	return ways
+}
+
+func opSwitch(left string, right string, op string, boolean bool, waysTrue map[string]int, waysFalse map[string]int) int {
+	fmt.Println(left, right, op, boolean)
+	switch op {
+	case "^":
+		if boolean {
+			return recParenWays(left, false, waysTrue, waysFalse)*recParenWays(right, true, waysTrue, waysFalse) +
+				recParenWays(left, true, waysTrue, waysFalse)*recParenWays(right, false, waysTrue, waysFalse)
+		} else {
+			return recParenWays(left, true, waysTrue, waysFalse)*recParenWays(right, true, waysTrue, waysFalse) +
+				recParenWays(left, false, waysTrue, waysFalse)*recParenWays(right, false, waysTrue, waysFalse)
+		}
+	case "&":
+		return opSwitch(left, right, "|", !boolean, waysTrue, waysFalse)
+	case "|":
+		if boolean {
+			return recParenWays(left, true, waysTrue, waysFalse)*recParenWays(right, true, waysTrue, waysFalse) +
+				recParenWays(left, true, waysTrue, waysFalse)*recParenWays(right, false, waysTrue, waysFalse) +
+				recParenWays(left, false, waysTrue, waysFalse)*recParenWays(right, true, waysTrue, waysFalse)
+		} else {
+			return recParenWays(left, false, waysTrue, waysFalse) * recParenWays(right, false, waysTrue, waysFalse)
+		}
+	}
+	panic("not implemented")
 }
