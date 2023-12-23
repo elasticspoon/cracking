@@ -172,54 +172,12 @@ def get_bases(heights, widths, depths)
   bases
 end
 
-def get_h(index, heights, bases, memo)
-  return memo[index] if memo[index]
-  return heights[index] unless bases[index]
+def get_h(move, heights, bases, memo)
+  return memo[move] if memo[move]
+  return heights[move] unless bases[move]
 
-  res = heights[index] + get_h(bases[index], heights, bases, memo)
-  memo[index] = res
-  res
-end
-
-BOARD_SIZE = 8
-def get_index(x, y)
-  x * BOARD_SIZE + y
-end
-
-def get_pos(index)
-  [index / BOARD_SIZE, index % BOARD_SIZE]
-end
-
-def valid?(pot_index, queen_pots)
-  x, y = get_pos(pot_index)
-  queen_pots.none? do |index|
-    new_x, new_y = get_pos(index)
-    x == new_x || y == new_y || (x - new_x).abs == (y - new_y).abs
-  end
-end
-
-def queen_locations
-  res = []
-  (0...BOARD_SIZE * BOARD_SIZE).each do |i|
-    queen_pots = {}
-    queen_pots[i] = true
-    res.concat(q_helper(7, queen_pots))
-  end
-end
-
-def q_helper(num_queens, queen_pots)
-  return queen_pots.keys if num_queens == 0
-  res = []
-
-  (0...BOARD_SIZE * BOARD_SIZE).each do |i|
-    next unless valid?(i, queen_pots.keys)
-
-    new_queen_pots = queen_pots.dup
-    new_queen_pots[i] = true
-
-    res.concat(q_helper(num_queens - 1, new_queen_pots))
-  end
-
+  res = heights[move] + get_h(bases[move], heights, bases, memo)
+  memo[move] = res
   res
 end
 
@@ -236,22 +194,61 @@ def max_stack(boxes)
   max_height
 end
 
-def rec_max_stack(boxes, index, memo)
-  return memo[index] if memo[index]
+def rec_max_stack(boxes, move, memo)
+  return memo[move] if memo[move]
 
-  max_height = boxes[index][0]
+  max_height = boxes[move][0]
 
-  (index...boxes.length).each do |i|
-    next unless stackable?(boxes[index], boxes[i])
+  (move...boxes.length).each do |i|
+    next unless stackable?(boxes[move], boxes[i])
 
-    pot_height = boxes[index][0] + rec_max_stack(boxes, i, memo)
+    pot_height = boxes[move][0] + rec_max_stack(boxes, i, memo)
     max_height = pot_height if pot_height > max_height
   end
 
-  memo[index] = max_height
+  memo[move] = max_height
   max_height
 end
 
 def stackable?(bottom, top)
   top[0] < bottom[0] && top[1] < bottom[1] && top[2] < bottom[2]
 end
+
+BOARD_SIZE = 8
+
+def get_index(x, y)
+  x * BOARD_SIZE + y
+end
+
+def get_pos(move)
+  [move / BOARD_SIZE, move % BOARD_SIZE]
+end
+
+def valid?(x, y, moves)
+  moves.none? do |move|
+    new_x, new_y = get_pos(move)
+    x == new_x || y == new_y || (x - new_x).abs == (y - new_y).abs
+  end
+end
+
+def queen_locations
+  q_helper(BOARD_SIZE, {}).map { |move| move.map { |m| get_pos(m) } }
+end
+
+def q_helper(num_queens, moves)
+  return [moves.keys] if num_queens == 0
+
+  res = []
+  (0...BOARD_SIZE).each do |i|
+    next unless valid?(num_queens - 1, i, moves.keys)
+
+    new_moves = moves.dup
+    index = get_index(num_queens - 1, i)
+    new_moves[index] = true
+    res.concat(q_helper(num_queens - 1, new_moves))
+  end
+
+  res
+end
+
+queen_locations.each { |loc| puts loc.inspect }

@@ -19,10 +19,10 @@ class StackOfStacks
     value
   end
 
-  def pop_at(index)
-    return nil if stacks.empty? || index >= stacks.size || index < 0
-    value = stacks[index].pop
-    stacks.delete_at(index) if stacks[index].empty?
+  def pop_at(move)
+    return nil if stacks.empty? || move >= stacks.size || move < 0
+    value = stacks[move].pop
+    stacks.delete_at(move) if stacks[move].empty?
     value
   end
 end
